@@ -30,12 +30,14 @@ def find_model_using_name(model_name):
     and it is case-insensitive.
     """
     model_filename = "models." + model_name + "_model"
-    modellib = importlib.import_module(model_filename)
+    modellib = importlib.import_module(model_filename)  # importlib.import_module动态导入模块
     model = None
+
     target_model_name = model_name.replace('_', '') + 'model'
+
     for name, cls in modellib.__dict__.items():
-        if name.lower() == target_model_name.lower() \
-           and issubclass(cls, BaseModel):
+        # .lower() 转换字符串中所有大写字符为小写
+        if name.lower() == target_model_name.lower() and issubclass(cls, BaseModel):
             model = cls
 
     if model is None:

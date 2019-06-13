@@ -81,7 +81,7 @@ def get_params(opt, size):
 def get_transform(opt, params=None, grayscale=False, method=Image.BICUBIC, convert=True):
     transform_list = []
     if grayscale:
-        transform_list.append(transforms.Grayscale(1))
+        transform_list.append(transforms.Grayscale(1))  #transforms.Grayscale 转为灰度图
     if 'resize' in opt.preprocess:
         osize = [opt.load_size, opt.load_size]
         transform_list.append(transforms.Resize(osize, method))
@@ -97,11 +97,12 @@ def get_transform(opt, params=None, grayscale=False, method=Image.BICUBIC, conve
     if opt.preprocess == 'none':
         transform_list.append(transforms.Lambda(lambda img: __make_power_2(img, base=4, method=method)))
 
-    if not opt.no_flip:
-        if params is None:
-            transform_list.append(transforms.RandomHorizontalFlip())
-        elif params['flip']:
-            transform_list.append(transforms.Lambda(lambda img: __flip(img, params['flip'])))
+    # 并不需要水平翻转
+    # if not opt.no_flip:
+    #     if params is None:
+    #         transform_list.append(transforms.RandomHorizontalFlip())    #概率水平翻转
+    #     elif params['flip']:
+    #         transform_list.append(transforms.Lambda(lambda img: __flip(img, params['flip'])))   #水平翻转
 
     if convert:
         transform_list += [transforms.ToTensor()]
@@ -140,7 +141,7 @@ def __crop(img, pos, size):
         return img.crop((x1, y1, x1 + tw, y1 + th))
     return img
 
-
+# 左右翻转
 def __flip(img, flip):
     if flip:
         return img.transpose(Image.FLIP_LEFT_RIGHT)

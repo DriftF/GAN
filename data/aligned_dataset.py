@@ -18,8 +18,22 @@ class AlignedDataset(BaseDataset):
             opt (Option class) -- stores all the experiment flags; needs to be a subclass of BaseOptions
         """
         BaseDataset.__init__(self, opt)
+
+
         self.dir_AB = os.path.join(opt.dataroot, opt.phase)  # get the image directory
         self.AB_paths = sorted(make_dataset(self.dir_AB, opt.max_dataset_size))  # get image paths
+
+
+        # real_A paths
+        self.dir_A=os.path.join(opt.dataroot,opt.phase+'/A')
+        # real_B paths
+        self.dir_B=os.path.join(opt.dataroot,opt.phase+'/B')
+
+        # real_A
+        self.A_paths=sorted(make_dataset(self.dir_A,opt.max_dataset_size))
+        # real_B
+        self.B_paths=sorted(make_dataset(self.dir_B,opt.max_dataset_size))
+
         assert(self.opt.load_size >= self.opt.crop_size)   # crop_size should be smaller than the size of loaded image
         self.input_nc = self.opt.output_nc if self.opt.direction == 'BtoA' else self.opt.input_nc
         self.output_nc = self.opt.input_nc if self.opt.direction == 'BtoA' else self.opt.output_nc
@@ -36,14 +50,21 @@ class AlignedDataset(BaseDataset):
             A_paths (str) - - image paths
             B_paths (str) - - image paths (same as A_paths)
         """
-        # read a image given a random integer index
-        AB_path = self.AB_paths[index]
-        AB = Image.open(AB_path).convert('RGB')
-        # split AB image into A and B
-        w, h = AB.size
-        w2 = int(w / 2)
-        A = AB.crop((0, 0, w2, h))
-        B = AB.crop((w2, 0, w, h))
+        # # read a image given a random integer index
+        # AB_path = self.AB_paths[index]
+        # AB = Image.open(AB_path).convert('RGB')
+
+        # # split AB image into A and B
+        # w, h = AB.size
+        # w2 = int(w / 2)
+        # A = AB.crop((0, 0, w2, h))
+        # B = AB.crop((w2, 0, w, h))
+
+        A_path=self.A_paths[index]
+        B_path=self.B_paths[index]
+
+        A=Image.open(A_path).convert('RGB')
+        B=Image.open(B_path).convert('RGB')
 
         # apply the same transform to both A and B
         transform_params = get_params(self.opt, A.size)
@@ -53,8 +74,8 @@ class AlignedDataset(BaseDataset):
         A = A_transform(A)
         B = B_transform(B)
 
-        return {'A': A, 'B': B, 'A_paths': AB_path, 'B_paths': AB_path}
+        return {'A': A, 'B': B, 'A_paths': A_path, 'B_paths': B_path}
 
     def __len__(self):
         """Return the total number of images in the dataset."""
-        return len(self.AB_paths)
+        return len(self.A_paths)

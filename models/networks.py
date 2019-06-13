@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.nn import init
-import functools
+import functools    #作用于函数或者返回其它函数的函数
 from torch.optim import lr_scheduler
 
 
