@@ -53,6 +53,7 @@ class Pix2PixModel(BaseModel):
         else:  # during test time, only load G
             self.model_names = ['G']
         # define networks (both generator and discriminator)
+
         self.netG = networks.define_G(opt.input_nc, opt.output_nc, opt.ngf, opt.netG, opt.norm,
                                       not opt.no_dropout, opt.init_type, opt.init_gain, self.gpu_ids)
 
@@ -71,8 +72,7 @@ class Pix2PixModel(BaseModel):
             self.optimizers.append(self.optimizer_D)
 
     def set_input(self, input):
-        """Unpack input data from the dataloader and perform necessary pre-processing steps.
-
+        """喂入数据并进行数据预处理
         Parameters:
             input (dict): include the data itself and its metadata information.
 
@@ -114,12 +114,12 @@ class Pix2PixModel(BaseModel):
         self.loss_G.backward()
 
     def optimize_parameters(self):
-        self.forward()                   # compute fake images: G(A)
+        self.forward()                   # compute fake images: G(A)　前向传播
         # update D
         self.set_requires_grad(self.netD, True)  # enable backprop for D
-        self.optimizer_D.zero_grad()     # set D's gradients to zero
-        self.backward_D()                # calculate gradients for D
-        self.optimizer_D.step()          # update D's weights
+        self.optimizer_D.zero_grad()     # set D's gradients to zero    判别器梯度归零
+        self.backward_D()                # calculate gradients for D    计算判别器梯度
+        self.optimizer_D.step()          # update D's weights   更新判别器的权重
         # update G
         self.set_requires_grad(self.netD, False)  # D requires no gradients when optimizing G
         self.optimizer_G.zero_grad()        # set G's gradients to zero

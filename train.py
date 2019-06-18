@@ -48,6 +48,7 @@ if __name__ == '__main__':
             visualizer.reset()  #重置其保存状态
             total_iters += opt.batch_size
             epoch_iter += opt.batch_size
+
             model.set_input(data)         # unpack data from dataset and apply preprocessing　喂入数据并进行能数据预处理
             model.optimize_parameters()   # calculate loss functions, get gradients, update network weights　计算损失，得出梯度，更新网络权重
 
