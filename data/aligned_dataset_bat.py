@@ -63,8 +63,8 @@ class AlignedDataset(BaseDataset):
         A_path=self.A_paths[index]
         B_path=self.B_paths[index]
 
-        A=Image.open(A_path).convert('RGB')
-        B=Image.open(B_path).convert('RGB')
+        # A=Image.open(A_path).convert('RGB')
+        # B=Image.open(B_path).convert('RGB')
 
         # apply the same transform to both A and B
         transform_params = get_params(self.opt, A.size)
